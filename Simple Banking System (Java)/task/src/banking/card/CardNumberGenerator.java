@@ -1,5 +1,7 @@
 package banking.card;
 
+import banking.utility.NumberGenerator;
+
 public class CardNumberGenerator {
 
     /**
@@ -10,8 +12,15 @@ public class CardNumberGenerator {
     public static String generateCardNumber() {
         StringBuilder sb = new StringBuilder();
 
-        // Generate BIN
+        // Generate BIN and append
         sb.append(generateBin());
+
+        // Generate customer account number and append
+        sb.append(generateCustomerAccountNumber());
+
+        // Generate checksum and append
+        sb.append(generateChecksum());
+
         return sb.toString();
     }
 
@@ -24,4 +33,21 @@ public class CardNumberGenerator {
         return "400000";
     }
 
+    /**
+     * Generates a random customer account number
+     *
+     * @return the customer account number as a string
+     */
+    private static String generateCustomerAccountNumber() {
+        return NumberGenerator.generateRandomDigitString(9);
+    }
+
+    /**
+     * Generates the checksum for the customer account number
+     *
+     * @return the checksum as a string
+     */
+    private static String generateChecksum() {
+        return "1";
+    }
 }

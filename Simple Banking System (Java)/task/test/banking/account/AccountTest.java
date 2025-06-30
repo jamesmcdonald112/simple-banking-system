@@ -56,13 +56,29 @@ public class AccountTest {
                 cardNumber.matches("\\d+"));
     }
 
+    /**
+     * Verifies that the card number starts with the correct BIN
+     */
     @Test
-    public void testCardNumberRandomlyGenerated() {
+    public void testCardBinNumber() {
         String cardNumber = account.getCardNumber();
         String bin = cardNumber.substring(0, 6);
 
         assertEquals("The BIN (first 6 digits) should be 400000",
                 "400000",
                 bin);
+    }
+
+    /**
+     * Verifies that different Account instances has different card numbers.
+     */
+    @Test
+    public void testCardNumberIsRandomAcrossAccounts() {
+        Account anotherAccount = new Account();
+        assertNotEquals("Card numbers for different accounts should not match." +
+                        "\nFirst Account: " + account.getCardNumber() +
+                        "\nSecond Account: " + anotherAccount.getCardNumber(),
+                account.getCardNumber(),
+                anotherAccount.getCardNumber());
     }
 }

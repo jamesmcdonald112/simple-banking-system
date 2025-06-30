@@ -1,5 +1,6 @@
 package banking.account;
 
+import banking.card.CardNumberGenerator;
 import banking.utility.NumberGenerator;
 
 public class Account {
@@ -14,7 +15,7 @@ public class Account {
     public Account() {
         this.balance = 0;
         this.pin = NumberGenerator.generateRandomDigitString(4);
-        this.cardNumber = "4000001234567890";
+        this.cardNumber = CardNumberGenerator.generateCardNumber();
     }
 
 //    Getters and Setters

@@ -42,6 +42,24 @@ public class AccountTest {
                 pin.length());
     }
 
+
+    /**
+     * Verifies that different PIN instances has different PIN.
+     */
+    @Test
+    public void testPinIsRandom() {
+        Account anotherAccount = new Account();
+
+        String firstPin = account.getPin();
+        String secondPin = anotherAccount.getPin();
+
+        assertNotEquals("PINs for different account should not match." +
+                        "\nFirst pin: " + firstPin +
+                        "\nSecond pin: " + secondPin,
+                firstPin,
+                secondPin);
+    }
+
     /**
      * Verifies that the card number is 16 digits and only numeric values.
      */

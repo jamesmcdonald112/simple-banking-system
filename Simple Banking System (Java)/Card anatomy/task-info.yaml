@@ -6,6 +6,15 @@ files:
   - name: test/SimpleBankSystemTest.java
     visible: false
     learner_created: false
-feedback_link: https://hyperskill.org/projects/93/stages/515/implement#comment
+  - name: src/banking/NOTES.md
+    visible: true
+    learner_created: true
+  - name: src/banking/utility/NumberGenerator.java
+    visible: true
+    learner_created: true
+  - name: test/banking/utility/NumberGeneratorTest.java
+    visible: true
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/8425#comment
 status: Unchecked
 record: -1

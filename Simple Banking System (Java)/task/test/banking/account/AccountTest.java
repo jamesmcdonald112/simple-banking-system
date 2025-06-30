@@ -27,4 +27,19 @@ public class AccountTest {
                 account.getBalance());
     }
 
+    /**
+     * Tests that a newly created Account should have a PIN of length 4
+     */
+    @Test
+    public void testPinIsFourDigits() {
+        String pin = account.getPin();
+
+        assertTrue("PIN should only contain only digits. PIN: " + account.getPin(),
+                pin.matches("\\d+"));
+
+        assertEquals("PIN should be four digits in length",
+                4,
+                pin.length());
+    }
+
 }

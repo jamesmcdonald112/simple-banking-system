@@ -34,7 +34,7 @@ public class AccountTest {
     public void testPinIsFourDigits() {
         String pin = account.getPin();
 
-        assertTrue("PIN should only contain only digits. PIN: " + account.getPin(),
+        assertTrue("PIN should only contain only digits. PIN: " + pin,
                 pin.matches("\\d+"));
 
         assertEquals("PIN should be four digits in length",
@@ -42,4 +42,17 @@ public class AccountTest {
                 pin.length());
     }
 
+    /**
+     * Verifies that the card number is 16 digits and only numeric values.
+     */
+    @Test
+    public void testCardNumberIs16DigitsAndNumeric() {
+        String cardNumber = account.getCardNumber();
+
+        assertTrue("Card number should be 16 digits in length. Actual length: "  + cardNumber.length(),
+                cardNumber.length() == 16);
+
+        assertTrue("Card number should only contain numeric characters. Card number: " + cardNumber,
+                cardNumber.matches("\\d+"));
+    }
 }

@@ -5,13 +5,16 @@ import banking.utility.NumberGenerator;
 public class Account {
     private int balance;
     private String pin;
+    private String cardNumber;
 
     /**
-     * Constructs a new account with a balance of 0 and a randomly generated 4-digit PIN.
+     * Constructs a new account with a balance of 0, a randomly generated 4-digit PIN, and
+     * generates a card number.
      */
     public Account() {
         this.balance = 0;
         this.pin = NumberGenerator.generateRandomDigitString(4);
+        this.cardNumber = "4000001234567890";
     }
 
 //    Getters and Setters
@@ -22,7 +25,7 @@ public class Account {
      * @return current balance as an int
      */
     public int getBalance() {
-        return balance;
+        return this.balance;
     }
 
     /**
@@ -31,6 +34,16 @@ public class Account {
      * @return the pin of the account as a string
      */
     public String getPin() {
-        return pin;
+        return this.pin;
     }
+
+    /**
+     * Returns the card number of the account
+     *
+     * @return card number as a Stirng
+     */
+    public String getCardNumber(){
+        return this.cardNumber;
+    }
+
 }

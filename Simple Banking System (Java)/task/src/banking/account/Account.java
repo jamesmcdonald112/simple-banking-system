@@ -41,7 +41,7 @@ public class Account {
     /**
      * Returns the card number of the account
      *
-     * @return card number as a Stirng
+     * @return card number as a String
      */
     public String getCardNumber(){
         return this.cardNumber;

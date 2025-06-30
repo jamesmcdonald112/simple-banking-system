@@ -55,4 +55,14 @@ public class AccountTest {
         assertTrue("Card number should only contain numeric characters. Card number: " + cardNumber,
                 cardNumber.matches("\\d+"));
     }
+
+    @Test
+    public void testCardNumberRandomlyGenerated() {
+        String cardNumber = account.getCardNumber();
+        String bin = cardNumber.substring(0, 6);
+
+        assertEquals("The BIN (first 6 digits) should be 400000",
+                "400000",
+                bin);
+    }
 }

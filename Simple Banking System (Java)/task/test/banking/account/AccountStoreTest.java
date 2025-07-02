@@ -60,15 +60,16 @@ public class AccountStoreTest {
      */
     @Test
     public void testFindByCardAndPin() {
-        Account newAccount = new Account();
-        String accountCard = newAccount.getCardNumber();
-        String accountPin = newAccount.getPin();
+        Account account = new Account();
+        AccountStore.addAccount(account);
 
-        AccountStore.addAccount(newAccount);
+        Account retrievedAccount = AccountStore.findByCardAndPin(account.getCardNumber(),
+                account.getPin());
 
-        Account retrievedAccount = AccountStore.findByCardAndPin(accountCard, accountPin);
+        assertNotNull("The retrieved account should not be null",
+                retrievedAccount);
         assertEquals("The retrieved account should match the originally added account",
-                newAccount,
+                account,
                 retrievedAccount);
     }
 }

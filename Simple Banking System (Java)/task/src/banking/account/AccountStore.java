@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountStore {
-    private static List<Account> accountsList = new ArrayList<Account>();
+    private static List<Account> accountsList = new ArrayList<>();
 
     /**
      * Returns a list of the accounts as List
@@ -28,5 +28,13 @@ public class AccountStore {
      */
     public static void addAccount(Account account) {
         accountsList.add(account);
+    }
+
+    public static Account findByCardAndPin(String cardNumber, String pinNumber) {
+        return accountsList.stream()
+                .filter(account -> account.getCardNumber().equals(cardNumber)
+                        && account.getPin().equals(pinNumber))
+                .findFirst()
+                .orElse(null);
     }
 }

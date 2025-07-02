@@ -54,4 +54,21 @@ public class AccountStoreTest {
                 0,
                 AccountStore.getAccounts().size());
     }
+
+    /**
+     * Verifies that an account can be found in AccountStore using its card number and PIN.
+     */
+    @Test
+    public void testFindByCardAndPin() {
+        Account newAccount = new Account();
+        String accountCard = newAccount.getCardNumber();
+        String accountPin = newAccount.getPin();
+
+        AccountStore.addAccount(newAccount);
+
+        Account retrievedAccount = AccountStore.findByCardAndPin(accountCard, accountPin);
+        assertEquals("The retrieved account should match the originally added account",
+                newAccount,
+                retrievedAccount);
+    }
 }

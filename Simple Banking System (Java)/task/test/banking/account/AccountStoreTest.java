@@ -37,4 +37,21 @@ public class AccountStoreTest {
                 accountsList.get(0));
     }
 
+    /**
+     * Verifies that the list of accounts is cleared after running the clearAccounts method.
+     */
+    @Test
+    public void testClearAccount() {
+        Account newAccount = new Account();
+        AccountStore.addAccount(newAccount);
+
+        assertEquals("The account list should be 1",
+                1,
+                AccountStore.getAccounts().size());
+
+        AccountStore.clearAccounts();
+        assertEquals("The account list should be 0",
+                0,
+                AccountStore.getAccounts().size());
+    }
 }

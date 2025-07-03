@@ -1,5 +1,6 @@
 package banking.menu;
 
+import banking.account.Account;
 import banking.account.AccountStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +29,28 @@ public class MenuControllerTest {
         MenuController menu = new MenuController();
         menu.handleCreateAccountOption();
 
-        assertEquals("AccountStore size should be 1",
+        assertEquals("Exactly one account should be added after account creation",
                 1,
                 AccountStore.getAccounts().size());
     }
 
+    /**
+     * Creates a new account and adds it to the AccountStore.
+     * Instantiates a new MenuController and verifies that a valid login attempt succeeds.
+     */
+    @Test
+    public void testHandleLoginOption() {
+        Account account = new Account();
+        String cardNumber = account.getCardNumber();
+        String pin = account.getPin();
+        AccountStore.addAccount(account);
+
+        MenuController menu = new MenuController();
+
+        boolean isValidLogin = menu.handleLoginOption(cardNumber, pin);
+
+        assertTrue("Login should succeed with a valid card number and PIN",
+                isValidLogin);
+    }
 
 }

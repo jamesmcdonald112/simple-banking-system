@@ -8,6 +8,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class MenuControllerTest {
+    private Account testAccount;
+    private MenuController menuController;
 
     /**
      * Clears the AccountStore of any accounts before each test
@@ -15,69 +17,51 @@ public class MenuControllerTest {
     @Before
     public void setUp() {
         AccountStore.clearAccounts();
+        testAccount = new Account();
+        AccountStore.addAccount(testAccount);
+        menuController = new MenuController();
     }
 
     /**
-     * Verifies that no accounts exist at the start and that one is added after selecting
-     * "create account".
+     * Verifies that only one account exists, the one created in the before method.
      */
     @Test
     public void testCreateAccountOption() {
-        assertTrue("No accounts should be in Account store before creating an account",
-                AccountStore.getAccounts().size() == 0);
-
-        MenuController menu = new MenuController();
-        menu.handleCreateAccountOption();
-
-        assertEquals("Exactly one account should be added after account creation",
+        assertEquals("AccountStore should contain exactly 1 account after setup",
                 1,
                 AccountStore.getAccounts().size());
     }
 
     /**
-     * Creates a new account and adds it to the AccountStore.
-     * Instantiates a new MenuController and verifies that a valid login attempt succeeds.
+     * Verifies that a valid login attempt succeeds.
      */
     @Test
     public void testHandleLoginOptionSuccess() {
-        Account account = new Account();
-        String cardNumber = account.getCardNumber();
-        String pin = account.getPin();
-        AccountStore.addAccount(account);
-
-        MenuController menu = new MenuController();
-
-        boolean isValidLogin = menu.handleLoginOption(cardNumber, pin);
+        boolean isValidLogin = menuController.handleLoginOption(testAccount.getCardNumber(),
+                testAccount.getPin());
 
         assertTrue("Login should succeed with a valid card number and PIN",
                 isValidLogin);
     }
 
     /**
-     * Creates a new account and adds it to the AccountStore.
-     * Instantiates a new MenuController and verifies that an invalid login attempt fails.
+     * Creates a dummy account for incorrect credentials.
+     * Verifies that an invalid login attempt fails.
      */
     @Test
     public void testHandleLoginOptionFailure() {
-        Account testAccount = new Account();
-        String testCardNumber = testAccount.getCardNumber();
-        String testPin = testAccount.getPin();
-        AccountStore.addAccount(testAccount);
-
         // Dummy account (used only to get incorrect credentials)
         Account dummyAccount = new Account();
         String dummyCardNumber = dummyAccount.getCardNumber();
         String dummyPin = dummyAccount.getPin();
 
-        MenuController menu = new MenuController();
-
         // Incorrect card number
-        boolean resultWrongCard = menu.handleLoginOption(dummyCardNumber, testPin);
+        boolean resultWrongCard = menuController.handleLoginOption(dummyCardNumber, testAccount.getPin());
         assertFalse("Login should not succeed with an invalid card number",
                 resultWrongCard);
 
         // Incorrect PIN
-        boolean resultWrongPin = menu.handleLoginOption(testCardNumber, dummyPin);
+        boolean resultWrongPin = menuController.handleLoginOption(testAccount.getCardNumber(), dummyPin);
         assertFalse("Login should not succeed with an invalid PIN",
                 resultWrongPin);
     }

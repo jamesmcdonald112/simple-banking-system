@@ -39,7 +39,7 @@ public class MenuControllerTest {
      * Instantiates a new MenuController and verifies that a valid login attempt succeeds.
      */
     @Test
-    public void testHandleLoginOption() {
+    public void testHandleLoginOptionSuccess() {
         Account account = new Account();
         String cardNumber = account.getCardNumber();
         String pin = account.getPin();
@@ -51,6 +51,35 @@ public class MenuControllerTest {
 
         assertTrue("Login should succeed with a valid card number and PIN",
                 isValidLogin);
+    }
+
+    /**
+     * Creates a new account and adds it to the AccountStore.
+     * Instantiates a new MenuController and verifies that an invalid login attempt fails.
+     */
+    @Test
+    public void testHandleLoginOptionFailure() {
+        Account testAccount = new Account();
+        String testCardNumber = testAccount.getCardNumber();
+        String testPin = testAccount.getPin();
+        AccountStore.addAccount(testAccount);
+
+        // Dummy account (used only to get incorrect credentials)
+        Account dummyAccount = new Account();
+        String dummyCardNumber = dummyAccount.getCardNumber();
+        String dummyPin = dummyAccount.getPin();
+
+        MenuController menu = new MenuController();
+
+        // Incorrect card number
+        boolean resultWrongCard = menu.handleLoginOption(dummyCardNumber, testPin);
+        assertFalse("Login should not succeed with an invalid card number",
+                resultWrongCard);
+
+        // Incorrect PIN
+        boolean resultWrongPin = menu.handleLoginOption(testCardNumber, dummyPin);
+        assertFalse("Login should not succeed with an invalid PIN",
+                resultWrongPin);
     }
 
 }

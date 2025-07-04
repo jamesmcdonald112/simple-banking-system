@@ -1,11 +1,14 @@
 package banking.menu;
 
 import banking.account.Account;
+import banking.account.AccountStore;
+import banking.login.LoginManager;
 
 import java.util.Scanner;
 
 public class MenuApplication {
     private final Scanner scanner;
+    private Account loggedInAccount = null;
 
     public MenuApplication(Scanner scanner) {
         this.scanner = scanner;
@@ -31,6 +34,19 @@ public class MenuApplication {
 
     }
 
+    /**
+     * The account currently logged in.
+     *
+     * @return The logged in account as Account
+     */
+    public Account getLoggedInAccount() {
+        return loggedInAccount;
+    }
+
+    private void setLoggedInAccount(Account loggedInAccount) {
+        this.loggedInAccount = loggedInAccount;
+    }
+
     /** Prints the main menu options to the console. */
     private void printMenuOptions() {
         System.out.println("""
@@ -40,7 +56,7 @@ public class MenuApplication {
     }
 
     /**
-     * Creates a new account, stores it in AccountStore,
+     * Creates a new account, stores it in AccountStore, sets the logged in account,
      * and prints the account details to the console.
      */
     private void handleCreateAccount() {
@@ -62,7 +78,26 @@ public class MenuApplication {
         System.out.println("");
     }
 
+    /**
+     * Prompts the user for their card number and pin, verifies that it matches an account in
+     * AccountStore, and prints a success message if correct, or a failure message if incorrect
+     */
     private void handleLogin() {
+        System.out.println("Enter your card number:\n");
+        String cardNumber = scanner.nextLine();
+        System.out.println("Enter your PIN:\n");
+        String pin = scanner.nextLine();
+
+        if (LoginManager.isValidLogin(cardNumber, pin)) {
+            System.out.println("You have successfully logged in!");
+            setLoggedInAccount(AccountStore.findByCardAndPin(cardNumber, pin));
+            showLoggedInMenu();
+        } else {
+            System.out.println("Wrong card number or PIN!");
+        }
+    }
+
+    private void showLoggedInMenu() {
 
     }
 }

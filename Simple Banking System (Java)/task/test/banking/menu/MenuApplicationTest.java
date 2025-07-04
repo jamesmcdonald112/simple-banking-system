@@ -1,5 +1,6 @@
 package banking.menu;
 
+import banking.account.Account;
 import banking.account.AccountStore;
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +37,52 @@ public class MenuApplicationTest {
         assertEquals("After creating an Account, the total size in AccountStore should be 1",
                 1,
                 AccountStore.getAccounts().size());
+    }
+
+    /**
+     * Creates an account and stores it in AccountStore, simulates user selecting "2"
+     * (login), entering card number and pin, and then "0" (exit).
+     */
+    @Test
+    public void testSuccessfulLoginThenExit() {
+        // Create account to know credentials
+        Account account = new Account();
+        AccountStore.addAccount(account);
+
+        String userInput = String.join("\n",
+                "2", // Login
+                account.getCardNumber(),
+                account.getPin(),
+                "0" // Exit
+        ) + "\n";
+        scanner = createScannerWithInput(userInput);
+
+
+        MenuApplication app = new MenuApplication(scanner);
+        app.start();
+
+        assertEquals("Logged in account should match the credentials used",
+                account.getCardNumber(),
+                app.getLoggedInAccount().getCardNumber());
+    }
+
+    /**
+     * Creates an account and stores it in AccountStore, simulates user selecting "2"
+     * (login), entering incorrect card number and pin, and then "0" (exit).
+     */
+    @Test
+    public void testInvalidLogin() {
+        Account account = new Account();
+        AccountStore.addAccount(account);
+
+        String userInput = String.join("\n",
+                "2", "wrongCard", "wrongPin", "0") + "\n";
+        scanner = createScannerWithInput(userInput);
+
+        MenuApplication app = new MenuApplication(scanner);
+        app.start();
+
+        assertNull("No account should be logged in with invalid credentials", app.getLoggedInAccount());
     }
 
     /**

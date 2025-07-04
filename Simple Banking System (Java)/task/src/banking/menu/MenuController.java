@@ -7,11 +7,15 @@ import banking.login.LoginManager;
 public class MenuController {
 
     /**
+     *
      * Creates a new account and adds it to the AccountStore
+     *
+     * @return The newly created account
      */
-    public static void handleCreateAccountOption() {
+    public static Account handleCreateAccountOption() {
         Account account = new Account();
         AccountStore.addAccount(account);
+        return account;
     }
 
     /**

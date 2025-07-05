@@ -7,7 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
@@ -21,6 +23,16 @@ public class MainMenuApplicationTest {
     @Before
     public void setup() {
         AccountStore.clearAccounts();
+    }
+
+    /**
+     * Closes the scanner after each test to free system resources.
+     */
+    @After
+    public void close() {
+        if (scanner != null) {
+            scanner.close();
+        }
     }
 
     /**
@@ -53,7 +65,8 @@ public class MainMenuApplicationTest {
                 "2", // Login
                 account.getCardNumber(),
                 account.getPin(),
-                "0" // Exit
+                "0", // Exit logged in menu
+                "0"// Exit main menu
         ) + "\n";
         scanner = createScannerWithInput(userInput);
 
@@ -85,14 +98,40 @@ public class MainMenuApplicationTest {
         assertNull("No account should be logged in with invalid credentials", app.getLoggedInAccount());
     }
 
-    /**
-     * Closes the scanner after each test to free system resources.
-     */
-    @After
-    public void close() {
-        if (scanner != null) {
-            scanner.close();
-        }
+    @Test
+    public void testShowLoggedInMenu() {
+        // Create account to know credentials
+        Account account = new Account();
+        AccountStore.addAccount(account);
+
+        String userInput = String.join("\n",
+                "2", // Login
+                account.getCardNumber(),
+                account.getPin(),
+                "1", // Banalce
+                "2", // Log-out
+                "0", // Exit Logged in menu
+                "0" // Exit main menu
+        ) + "\n";
+
+        scanner = new Scanner(new ByteArrayInputStream(userInput.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        MainMenuApplication app = new MainMenuApplication(scanner);
+        app.start();
+
+        String output = out.toString();
+
+        assertTrue("Expected menu option '1. Balance' was not found in output:\n" + output,
+                output.contains("1. Balance"));
+
+        assertTrue("Expected account balance 'Balance: 0' was not found in output:\n" + output,
+                output.contains("Balance: 0"));
+
+        assertTrue("Expected logout message 'You have successfully logged out!' was not found in output:\n" + output,
+                output.contains("You have successfully logged out!"));
     }
 
     /**

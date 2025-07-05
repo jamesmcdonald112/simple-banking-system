@@ -26,6 +26,7 @@ import org.junit.runners.Suite;
         banking.menu.main.MainMenuServiceTest.class,
 
         // Utility
+        banking.utility.InputParserTest.class,
         banking.utility.NumberGeneratorTest.class
 })
 public class AllTests {

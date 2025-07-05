@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class LoginMenuApplication {
     private final Scanner scanner;
     private final Account loggedInAccount;
+    private boolean loggedIn;
 
 
     /**
@@ -20,13 +21,22 @@ public class LoginMenuApplication {
     public LoginMenuApplication(Scanner scanner, Account loggedInAccount) {
         this.scanner = scanner;
         this.loggedInAccount = loggedInAccount;
+        this.loggedIn = true;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    private void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
     }
 
     /** Starts the login menu loop and handles user navigation. */
     public void start() {
         boolean running = true;
 
-        while (running) {
+        while (running && loggedIn) {
             printMenuOptions();
             String input = scanner.nextLine();
             LoginMenuResult choice = LoginMenuService.handleMenuInput(input);
@@ -55,8 +65,11 @@ public class LoginMenuApplication {
         System.out.println("Balance: " + loggedInAccount.getBalance());
     }
 
-
+    /**
+     * Prints a logged out message to the screen and sets loggedIn to false
+     */
     private void handleLogOut() {
-
+        System.out.println("You have successfully logged out!");
+        setLoggedIn(false);
     }
 }

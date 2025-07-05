@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 public class LoginMenuApplicationTest {
     private Scanner scanner;
     private Account loggedInAccount;
+    private boolean LoggedOut = false;
 
     /**
      * Creates a new account to test login
@@ -56,5 +57,32 @@ public class LoginMenuApplicationTest {
         assertTrue("Expected balance output to contain 'Balance: 0'",
                 output.contains("Balance: 0"));
 
+    }
+
+    /**
+     * Simulates user selecting "2" (Log out) followed by "0" (exit),
+     * and verifies that logged in is set to false and a log-out message is printed to the screen.
+     */
+    @Test
+    public void testLogOutThenExit() {
+        String input = String.join("\n",
+                "2", // Log out
+                "0" // Exit
+        ) + "\n";
+        scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertFalse("LoggedIn should be false",
+                loginApp.isLoggedIn());
+
+        assertTrue("You have successfully logged out! should appear on the screen",
+                output.contains("You have successfully logged out!"));
     }
 }

@@ -10,21 +10,7 @@ public class MainMenuService {
      * @return The MenuResult
      */
     public static MainMenuResult handleMenuInput(String input) {
-        int parsed = parseIntFromString(input);
+        int parsed = banking.utility.InputParser.safeParseInt(input, MainMenuResult.INVALID.getValue());
         return MainMenuResult.fromValue(parsed);
-    }
-
-    /**
-     * Attempts to parse an integer from the input string
-     *
-     * @param input Input as a String
-     * @return Parsed integer, or -1 if parsing fails
-     */
-    private static int parseIntFromString(String input) {
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            return MainMenuResult.INVALID.getValue();
-        }
     }
 }

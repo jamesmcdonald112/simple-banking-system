@@ -1,19 +1,19 @@
-package banking.menu;
+package banking.menu.main;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MenuServiceTest {
+public class MainMenuServiceTest {
 
     /**
      * Verifies that an input of "0" should return EXIT
      */
     @Test
     public void testUserInput0ReturnsExit() {
-        MenuResult menuResult = MenuService.handleMenuInput("0");
+        MainMenuResult menuResult = MainMenuService.handleMenuInput("0");
         assertEquals("An input of 0 should return EXIT",
-                MenuResult.EXIT,
+                MainMenuResult.EXIT,
                 menuResult);
     }
 
@@ -22,9 +22,9 @@ public class MenuServiceTest {
      */
     @Test
     public void testUserInput1ReturnsCreateAccount() {
-        MenuResult menuResult = MenuService.handleMenuInput("1");
+        MainMenuResult menuResult = MainMenuService.handleMenuInput("1");
         assertEquals("An input of 1 should return CREATE_ACCOUNT",
-                MenuResult.CREATE_ACCOUNT,
+                MainMenuResult.CREATE_ACCOUNT,
                 menuResult);
     }
 
@@ -33,9 +33,9 @@ public class MenuServiceTest {
      */
     @Test
     public void testUserInput2ReturnsLogin() {
-        MenuResult menuResult = MenuService.handleMenuInput("2");
+        MainMenuResult menuResult = MainMenuService.handleMenuInput("2");
         assertEquals("An input of 2 should return LOGIN",
-                MenuResult.LOGIN,
+                MainMenuResult.LOGIN,
                 menuResult);
     }
 
@@ -45,16 +45,16 @@ public class MenuServiceTest {
     @Test
     public void testInvalidInputReturnsInvalid() {
         assertEquals("Input of '999' should be invalid",
-                MenuResult.INVALID,
-                MenuService.handleMenuInput("999"));
+                MainMenuResult.INVALID,
+                MainMenuService.handleMenuInput("999"));
 
         assertEquals("Input of abc should be invalid",
-                MenuResult.INVALID,
-                MenuService.handleMenuInput("abc"));
+                MainMenuResult.INVALID,
+                MainMenuService.handleMenuInput("abc"));
 
         assertEquals("Input of '' should be invalid",
-                MenuResult.INVALID,
-                MenuService.handleMenuInput(""));
+                MainMenuResult.INVALID,
+                MainMenuService.handleMenuInput(""));
     }
 
 }

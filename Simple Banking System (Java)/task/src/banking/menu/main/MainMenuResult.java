@@ -1,6 +1,6 @@
-package banking.menu;
+package banking.menu.main;
 
-public enum MenuResult {
+public enum MainMenuResult {
     EXIT(0),
     CREATE_ACCOUNT(1),
     LOGIN(2),
@@ -8,7 +8,7 @@ public enum MenuResult {
 
     private final int value;
 
-    MenuResult(int value) {
+    MainMenuResult(int value) {
         this.value = value;
     }
 
@@ -16,8 +16,8 @@ public enum MenuResult {
         return value;
     }
 
-    public static MenuResult fromValue(int input) {
-        for (MenuResult result: values()) {
+    public static MainMenuResult fromValue(int input) {
+        for (MainMenuResult result: values()) {
             if (result.value == input) return result;
         }
         return INVALID;

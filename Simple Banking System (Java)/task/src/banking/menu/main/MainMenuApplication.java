@@ -1,16 +1,17 @@
-package banking.menu;
+package banking.menu.main;
 
 import banking.account.Account;
+import banking.account.AccountController;
 import banking.account.AccountStore;
 import banking.login.LoginManager;
 
 import java.util.Scanner;
 
-public class MenuApplication {
+public class MainMenuApplication {
     private final Scanner scanner;
     private Account loggedInAccount = null;
 
-    public MenuApplication(Scanner scanner) {
+    public MainMenuApplication(Scanner scanner) {
         this.scanner = scanner;
     }
 
@@ -22,7 +23,7 @@ public class MenuApplication {
         while (running) {
             printMenuOptions();
             String input = scanner.nextLine();
-            MenuResult choice = MenuService.handleMenuInput(input);
+            MainMenuResult choice = MainMenuService.handleMenuInput(input);
 
             switch (choice) {
                 case CREATE_ACCOUNT -> handleCreateAccount();
@@ -60,7 +61,7 @@ public class MenuApplication {
      * and prints the account details to the console.
      */
     private void handleCreateAccount() {
-        Account createdAccount = MenuController.handleCreateAccountOption();
+        Account createdAccount = AccountController.handleCreateAccountOption();
         printAccountInformation(createdAccount.getCardNumber(), createdAccount.getPin());
 
     }

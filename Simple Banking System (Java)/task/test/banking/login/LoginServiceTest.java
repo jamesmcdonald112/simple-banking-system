@@ -1,4 +1,4 @@
-package banking.menu;
+package banking.login;
 
 import banking.account.Account;
 import banking.account.AccountStore;
@@ -7,9 +7,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MenuControllerTest {
+public class LoginServiceTest {
     private Account testAccount;
-    private MenuController menuController;
+    private LoginService loginService;
 
     /**
      * Clears the AccountStore of any accounts before each test
@@ -19,17 +19,6 @@ public class MenuControllerTest {
         AccountStore.clearAccounts();
         testAccount = new Account();
         AccountStore.addAccount(testAccount);
-        menuController = new MenuController();
-    }
-
-    /**
-     * Verifies that only one account exists, the one created in the before method.
-     */
-    @Test
-    public void testCreateAccountOption() {
-        assertEquals("AccountStore should contain exactly 1 account after setup",
-                1,
-                AccountStore.getAccounts().size());
     }
 
     /**
@@ -37,7 +26,7 @@ public class MenuControllerTest {
      */
     @Test
     public void testHandleLoginOptionSuccess() {
-        boolean isValidLogin = menuController.handleLoginOption(testAccount.getCardNumber(),
+        boolean isValidLogin = loginService.handleLoginOption(testAccount.getCardNumber(),
                 testAccount.getPin());
 
         assertTrue("Login should succeed with a valid card number and PIN",
@@ -56,12 +45,12 @@ public class MenuControllerTest {
         String dummyPin = dummyAccount.getPin();
 
         // Incorrect card number
-        boolean resultWrongCard = menuController.handleLoginOption(dummyCardNumber, testAccount.getPin());
+        boolean resultWrongCard = loginService.handleLoginOption(dummyCardNumber, testAccount.getPin());
         assertFalse("Login should not succeed with an invalid card number",
                 resultWrongCard);
 
         // Incorrect PIN
-        boolean resultWrongPin = menuController.handleLoginOption(testAccount.getCardNumber(), dummyPin);
+        boolean resultWrongPin = loginService.handleLoginOption(testAccount.getCardNumber(), dummyPin);
         assertFalse("Login should not succeed with an invalid PIN",
                 resultWrongPin);
     }

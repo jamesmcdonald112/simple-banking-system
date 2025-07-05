@@ -1,6 +1,6 @@
-package banking.menu;
+package banking.menu.main;
 
-public class MenuService {
+public class MainMenuService {
 
     /**
      * Converts the user-provided menu input string into the corresponding MenuResult enum.
@@ -9,9 +9,9 @@ public class MenuService {
      * @param input Input as a String
      * @return The MenuResult
      */
-    public static MenuResult handleMenuInput(String input) {
+    public static MainMenuResult handleMenuInput(String input) {
         int parsed = parseIntFromString(input);
-        return MenuResult.fromValue(parsed);
+        return MainMenuResult.fromValue(parsed);
     }
 
     /**
@@ -24,7 +24,7 @@ public class MenuService {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            return MenuResult.INVALID.getValue();
+            return MainMenuResult.INVALID.getValue();
         }
     }
 }

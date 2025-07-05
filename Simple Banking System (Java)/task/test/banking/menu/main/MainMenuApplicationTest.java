@@ -1,4 +1,4 @@
-package banking.menu;
+package banking.menu.main;
 
 import banking.account.Account;
 import banking.account.AccountStore;
@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
-public class MenuApplicationTest {
+public class MainMenuApplicationTest {
     private Scanner scanner;
 
     /**
@@ -31,7 +31,7 @@ public class MenuApplicationTest {
     public void testCreateAccountThenExit() {
         scanner = createScannerWithInput("1\n0\n");
 
-        MenuApplication app = new MenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner);
         app.start();
 
         assertEquals("After creating an Account, the total size in AccountStore should be 1",
@@ -58,7 +58,7 @@ public class MenuApplicationTest {
         scanner = createScannerWithInput(userInput);
 
 
-        MenuApplication app = new MenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner);
         app.start();
 
         assertEquals("Logged in account should match the credentials used",
@@ -79,7 +79,7 @@ public class MenuApplicationTest {
                 "2", "wrongCard", "wrongPin", "0") + "\n";
         scanner = createScannerWithInput(userInput);
 
-        MenuApplication app = new MenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner);
         app.start();
 
         assertNull("No account should be logged in with invalid credentials", app.getLoggedInAccount());

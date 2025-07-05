@@ -4,6 +4,7 @@ import banking.account.Account;
 import banking.account.AccountController;
 import banking.account.AccountStore;
 import banking.login.LoginManager;
+import banking.menu.login.LoginMenuApplication;
 
 import java.util.Scanner;
 
@@ -92,13 +93,10 @@ public class MainMenuApplication {
         if (LoginManager.isValidLogin(cardNumber, pin)) {
             System.out.println("You have successfully logged in!");
             setLoggedInAccount(AccountStore.findByCardAndPin(cardNumber, pin));
-            showLoggedInMenu();
+            LoginMenuApplication loginMenu = new LoginMenuApplication(scanner, loggedInAccount);
+            loginMenu.start();
         } else {
             System.out.println("Wrong card number or PIN!");
         }
-    }
-
-    private void showLoggedInMenu() {
-
     }
 }

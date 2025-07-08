@@ -4,10 +4,6 @@ import java.util.Arrays;
 
 public class LuhnUtils {
 
-    public static void main(String[] args) {
-        System.out.println(calculateChecksum("400000844943340"));
-    }
-
     /**
      * Applies the Luhn algorithm to check whether a card number is valid.
      * The last digit is treated as a checksum and used to verify the preceding digits.

@@ -1,5 +1,6 @@
 package banking.card;
 
+import banking.utility.LuhnUtils;
 import banking.utility.NumberGenerator;
 
 public class CardNumberGenerator {
@@ -19,7 +20,8 @@ public class CardNumberGenerator {
         sb.append(generateCustomerAccountNumber());
 
         // Generate checksum and append
-        sb.append(generateChecksum());
+        int checksum = generateChecksum(sb.toString());
+        sb.append(checksum);
 
         return sb.toString();
     }
@@ -47,7 +49,7 @@ public class CardNumberGenerator {
      *
      * @return the checksum as a string
      */
-    private static String generateChecksum() {
-        return "1";
+    private static int generateChecksum(String accountIdentifierAndBin) {
+        return LuhnUtils.calculateChecksum(accountIdentifierAndBin);
     }
 }

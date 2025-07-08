@@ -1,12 +1,11 @@
 package banking.utility;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class LuhnUtils {
 
     public static void main(String[] args) {
-        System.out.println(isValid("4000008449433403"));
+        System.out.println(calculateChecksum("400000844943340"));
     }
 
     /**
@@ -43,8 +42,47 @@ public class LuhnUtils {
         return (total + checksumDigit) % 10 == 0;
     }
 
-    public static char calculateChecksum() {
-        return '0';
+    /**
+     * Calculates the Luhn checksum digit for a given partial card number (usually BIN + account identifier).
+     * <p>
+     * The Luhn algorithm is used to validate identification numbers like credit card numbers. This method
+     * implements the core algorithm to generate the final checksum digit that would make the full number valid.
+     * </p>
+     *
+     * <p>
+     * Algorithm steps:
+     * <ul>
+     *   <li>Convert the input string to an array of digits</li>
+     *   <li>Double every digit at even index (0-based)</li>
+     *   <li>If a doubled digit exceeds 9, subtract 9 from it</li>
+     *   <li>Sum all the processed digits</li>
+     *   <li>Calculate the checksum so that (sum + checksum) % 10 == 0</li>
+     * </ul>
+     * </p>
+     *
+     * @param accountIdentifierAndBin A string of 15 digits representing the card number without the checksum.
+     * @return The checksum digit (0–9) that should be appended to make the full number valid.
+     */
+    public static int calculateChecksum(String accountIdentifierAndBin) {
+        int[] digits = convertCardAsStringToIntArray(accountIdentifierAndBin);
+
+        int total = 0;
+
+        // iterate through all numbers, double the odd digits, and add all to the total
+        for (int i = 0; i < digits.length; i++) {
+            int currentDigit = digits[i];
+
+            // Double digits at even indexes (0-based)
+            if (i % 2 == 0) currentDigit *= 2;
+
+            // Subtract 9 from values greater than 9
+            if(currentDigit > 9) currentDigit -= 9;
+
+            total += currentDigit;
+        }
+
+        int checksum = (10 -(total % 10)) % 10;
+        return checksum;
     }
 
     /**

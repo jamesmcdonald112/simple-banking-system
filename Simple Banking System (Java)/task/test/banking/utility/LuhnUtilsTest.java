@@ -25,7 +25,6 @@ public class LuhnUtilsTest {
     }
 
 
-
     /**
      * Validates that invalid card numbers fail the Luhn check
      */
@@ -42,5 +41,16 @@ public class LuhnUtilsTest {
             assertFalse("Expected card to be invalid: " + card,
                     LuhnUtils.isValid(card));
         }
-        }
+    }
+
+    @Test
+    public void testCalculateChecksum() {
+        String accountIdentifierAndBin = "400000844943340";
+        int checksum = LuhnUtils.calculateChecksum(accountIdentifierAndBin);
+
+        String validCardNumber = accountIdentifierAndBin + checksum;
+
+        assertTrue("Expect card to be valid: " + validCardNumber,
+                LuhnUtils.isValid(validCardNumber));
+    }
 }

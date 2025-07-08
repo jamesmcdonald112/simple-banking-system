@@ -1,3 +1,4 @@
+import banking.database.DatabaseManagerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -31,7 +32,7 @@ import org.junit.runners.Suite;
         banking.utility.NumberGeneratorTest.class,
 
         // Database
-        banking.DatabaseManagerTest.class
+        banking.database.DatabaseManagerTest.class
 })
 public class AllTests {
 

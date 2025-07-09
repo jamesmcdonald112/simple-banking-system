@@ -39,6 +39,13 @@ public class CardDAO {
 
     }
 
+    /**
+     * Adds a card number, PIN, and balance to the card table in the database.
+     *
+     * @param cardNumber card number as a String
+     * @param pin PIN as a String
+     * @param balance Balance as an int
+     */
     public void addCard(String cardNumber, String pin, int balance) {
         String sql = """
                 INSERT INTO card (number, pin, balance)
@@ -57,6 +64,13 @@ public class CardDAO {
         }
     }
 
+    /**
+     * Searches the database by card and PIN and returns an account.
+     *
+     * @param cardNumber card number as a String
+     * @param pin PIN as a String
+     * @return The Account as an Account if found; null otherwise.
+     */
     public Account findByCardAndPin(String cardNumber, String pin) {
         String sql = """
                 SELECT number, pin, balance 

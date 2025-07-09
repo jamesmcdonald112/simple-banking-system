@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
 
         // Database
         banking.database.CardDAOTest.class,
+        banking.database.DatabaseConfigTest.class,
         banking.database.DatabaseManagerTest.class,
 
         // Login

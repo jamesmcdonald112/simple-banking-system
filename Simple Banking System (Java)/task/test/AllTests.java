@@ -12,6 +12,10 @@ import org.junit.runners.Suite;
         // Card
         banking.card.CardNumberGeneratorTest.class,
 
+        // Database
+        banking.database.CardDAOTest.class,
+        banking.database.DatabaseManagerTest.class,
+
         // Login
         banking.login.LoginManagerTest.class,
         banking.login.LoginServiceTest.class,
@@ -26,13 +30,14 @@ import org.junit.runners.Suite;
         banking.menu.main.MainMenuResultTest.class,
         banking.menu.main.MainMenuServiceTest.class,
 
+        // Runner
+
+
         // Utility
         banking.utility.InputParserTest.class,
         banking.utility.LuhnUtilsTest.class,
         banking.utility.NumberGeneratorTest.class,
 
-        // Database
-        banking.database.DatabaseManagerTest.class
 })
 public class AllTests {
 

@@ -1,5 +1,6 @@
 package banking.database;
 
+import banking.account.Account;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -16,7 +17,7 @@ public class CardDAOTest {
      * If it does not exist, it will be created.
      */
     @Test
-    public void createTable() {
+    public void testCreateTable() {
         String dbName = "test.s3db";
         CardDAO dao = new CardDAO(dbName);
         dao.ensureCardTableExists();
@@ -24,6 +25,26 @@ public class CardDAOTest {
         boolean exists = tableExists("card", dbName);
         assertTrue("Card table should exist",
                 exists);
+    }
+
+    @Test
+    public void testAddCard() {
+        Account account = new Account();
+        CardDAO dao = new CardDAO("testAddCard.s3db");
+        dao.ensureCardTableExists();
+        dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
+
+        Account retrievedAccount = dao.findByCardAndPin(account.getCardNumber(), account.getPin());
+        assertNotNull("Card should be found in the database",
+                retrievedAccount);
+
+        assertEquals("Card numbers from account and retrieved account should match",
+                account.getCardNumber(),
+                retrievedAccount.getCardNumber());
+
+        assertEquals("Pins from account and retrieved account should match",
+                account.getPin(),
+                retrievedAccount.getPin());
     }
 
 

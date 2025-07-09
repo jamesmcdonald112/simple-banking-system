@@ -1,3 +1,4 @@
+import banking.database.DatabaseManagerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -28,7 +29,10 @@ import org.junit.runners.Suite;
         // Utility
         banking.utility.InputParserTest.class,
         banking.utility.LuhnUtilsTest.class,
-        banking.utility.NumberGeneratorTest.class
+        banking.utility.NumberGeneratorTest.class,
+
+        // Database
+        banking.database.DatabaseManagerTest.class
 })
 public class AllTests {
 

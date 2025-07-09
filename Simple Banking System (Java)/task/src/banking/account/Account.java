@@ -18,6 +18,19 @@ public class Account {
         this.cardNumber = CardNumberGenerator.generateCardNumber();
     }
 
+    /**
+     * Constructs an account with given card info such as card number, PIN, and balance.
+     *
+     * @param cardNumber The card number as a String
+     * @param pin The PIN as a String
+     * @param balance The balance as an int
+     */
+    public Account(String cardNumber, String pin, int balance) {
+        this.cardNumber = cardNumber;
+        this.pin = pin;
+        this.balance = balance;
+    }
+
 //    Getters and Setters
 
     /**

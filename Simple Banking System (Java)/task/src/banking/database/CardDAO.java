@@ -32,7 +32,7 @@ public class CardDAO {
             """;
 
         try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+             Statement stmt = conn.createStatement()) {
             stmt.execute(createTable);
         } catch (SQLException e) {
             System.err.println("Failed to create table: " + e.getMessage());

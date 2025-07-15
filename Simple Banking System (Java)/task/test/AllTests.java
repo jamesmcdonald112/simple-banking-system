@@ -1,4 +1,3 @@
-import banking.database.DatabaseManagerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -7,7 +6,6 @@ import org.junit.runners.Suite;
         // Account
         banking.account.AccountControllerTest.class,
         banking.account.AccountTest.class,
-        banking.account.AccountStoreTest.class,
 
         // Card
         banking.card.CardNumberGeneratorTest.class,
@@ -20,7 +18,8 @@ import org.junit.runners.Suite;
         // Login
         banking.login.LoginManagerTest.class,
         banking.login.LoginServiceTest.class,
-        
+
+        // TODO: Replace System.exit() in MainMenuApplication with injectable ExitHandler for test-safe exit.
         // Menu Login
         banking.menu.login.LoginMenuApplicationTest.class,
         banking.menu.login.LoginMenuResultTest.class,

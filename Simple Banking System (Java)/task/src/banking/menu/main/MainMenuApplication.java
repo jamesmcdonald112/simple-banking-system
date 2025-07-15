@@ -2,7 +2,7 @@ package banking.menu.main;
 
 import banking.account.Account;
 import banking.account.AccountController;
-import banking.account.AccountStore;
+import banking.database.CardDAO;
 import banking.login.LoginManager;
 import banking.menu.login.LoginMenuApplication;
 
@@ -10,10 +10,12 @@ import java.util.Scanner;
 
 public class MainMenuApplication {
     private final Scanner scanner;
+    private final CardDAO cardDAO;
     private Account loggedInAccount = null;
 
-    public MainMenuApplication(Scanner scanner) {
+    public MainMenuApplication(Scanner scanner, CardDAO cardDAO) {
         this.scanner = scanner;
+        this.cardDAO = cardDAO;
     }
 
 
@@ -24,12 +26,15 @@ public class MainMenuApplication {
         while (running) {
             printMenuOptions();
             String input = scanner.nextLine();
+            System.err.println("DEBUG: Read input -> " + input);
             MainMenuResult choice = MainMenuService.handleMenuInput(input);
 
             switch (choice) {
                 case CREATE_ACCOUNT -> handleCreateAccount();
                 case LOGIN -> handleLogin();
-                case EXIT -> running = false;
+                case EXIT -> {
+                    System.exit(0);
+                }
                 default -> System.out.println("Invalid option. Try Again.");
             }
         }
@@ -62,7 +67,7 @@ public class MainMenuApplication {
      * and prints the account details to the console.
      */
     private void handleCreateAccount() {
-        Account createdAccount = AccountController.handleCreateAccountOption();
+        Account createdAccount = AccountController.handleCreateAccountOption(cardDAO);
         printAccountInformation(createdAccount.getCardNumber(), createdAccount.getPin());
 
     }
@@ -90,9 +95,9 @@ public class MainMenuApplication {
         System.out.println("Enter your PIN:\n");
         String pin = scanner.nextLine();
 
-        if (LoginManager.isValidLogin(cardNumber, pin)) {
+        if (LoginManager.isValidLogin(cardNumber, pin, cardDAO)) {
             System.out.println("You have successfully logged in!");
-            setLoggedInAccount(AccountStore.findByCardAndPin(cardNumber, pin));
+            setLoggedInAccount(cardDAO.findByCardAndPin(cardNumber, pin));
             LoginMenuApplication loginMenu = new LoginMenuApplication(scanner, loggedInAccount);
             loginMenu.start();
         } else {

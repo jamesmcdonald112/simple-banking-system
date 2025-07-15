@@ -1,19 +1,29 @@
 package banking.database;
 
+import org.junit.After;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.*;
 
 public class DatabaseManagerTest {
+
+    @After
+    public void cleanup() {
+        new File("DatabaseManagerTest.s3db").delete();
+    }
 
     /**
      * Tests that connecting to a valid database returns true.
      */
     @Test
     public void testConnectToValidDatabaseReturnsTrue() {
-        boolean result = DatabaseManager.connectTo("test.s3db");
+        DatabaseManager manager = new DatabaseManager();
+        boolean result = manager.connectTo("DatabaseManagerTest.s3db");
         assertTrue("Valid database should return true",
                 result);
+
     }
 
     /**
@@ -21,7 +31,8 @@ public class DatabaseManagerTest {
      */
     @Test
     public void testConnectToInvalidDatabaseReturnsFalse() {
-        boolean result = DatabaseManager.connectTo("/invalid/path.db");
+        DatabaseManager manager = new DatabaseManager();
+        boolean result = manager.connectTo("/invalid/path.db");
         assertFalse("Invalid database should return false",
                 result);
     }

@@ -97,17 +97,3 @@ public class LuhnUtils {
         return digits;
     }
 }
-
-
-/*
-- Take the original card number
-- Drop the last digit (16th digit)
-- Multiply odd digits (including the first digit) by 2
-- Subtract 9 to numbers over 9
-- Add all numbers together
-- Whatever is left over (moduls 10) is the check sum
-
-- The card number is stored as a string, i need to break each character into an array and
-  convert it to an int for this to work. This will allow e to multiply by two and to add
-  together. At the end, i can convert it back to a string
- */

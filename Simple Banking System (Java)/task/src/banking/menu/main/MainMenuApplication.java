@@ -33,7 +33,7 @@ public class MainMenuApplication {
                 case CREATE_ACCOUNT -> handleCreateAccount();
                 case LOGIN -> handleLogin();
                 case EXIT -> {
-                    System.exit(0);
+                    running = false;
                 }
                 default -> System.out.println("Invalid option. Try Again.");
             }

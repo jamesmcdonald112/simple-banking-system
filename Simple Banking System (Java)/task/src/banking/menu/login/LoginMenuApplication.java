@@ -1,9 +1,6 @@
 package banking.menu.login;
 
 import banking.account.Account;
-import banking.menu.main.MainMenuResult;
-import banking.menu.main.MainMenuService;
-
 import java.util.Scanner;
 
 public class LoginMenuApplication {
@@ -24,10 +21,20 @@ public class LoginMenuApplication {
         this.loggedIn = true;
     }
 
+    /**
+     * Returns the current logged-in status of the Account
+     *
+     * @return True if logged in; false otherwise
+     */
     public boolean isLoggedIn() {
         return loggedIn;
     }
 
+    /**
+     * Sets the logged in status of the account.
+     *
+     * @param loggedIn True if logged in; false otherwise
+     */
     private void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }

@@ -1,7 +1,8 @@
 package banking.menu.main;
 
 import banking.account.Account;
-import banking.account.AccountStore;
+import banking.database.CardDAO;
+import banking.utility.database.DatabaseTestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,18 +12,32 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 public class MainMenuApplicationTest {
     private Scanner scanner;
+    private CardDAO dao;
+    private String databaseName;
+    private Connection conn;
+
 
     /**
      * Clears the account store before each test to ensure a clean state.
      */
     @Before
     public void setup() {
-        AccountStore.clearAccounts();
+        this.databaseName = "testMainMenuApplication.s3db";
+        try {
+            this.conn = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+            this.dao = new CardDAO(conn);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        this.dao.ensureCardTableExists();
     }
 
     /**
@@ -30,6 +45,7 @@ public class MainMenuApplicationTest {
      */
     @After
     public void close() {
+        DatabaseTestUtils.deleteDatabaseFile(databaseName);
         if (scanner != null) {
             scanner.close();
         }
@@ -43,12 +59,12 @@ public class MainMenuApplicationTest {
     public void testCreateAccountThenExit() {
         scanner = createScannerWithInput("1\n0\n");
 
-        MainMenuApplication app = new MainMenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner, dao);
         app.start();
 
         assertEquals("After creating an Account, the total size in AccountStore should be 1",
                 1,
-                AccountStore.getAccounts().size());
+                dao.countAllCards());
     }
 
     /**
@@ -59,7 +75,7 @@ public class MainMenuApplicationTest {
     public void testSuccessfulLoginThenExit() {
         // Create account to know credentials
         Account account = new Account();
-        AccountStore.addAccount(account);
+        this.dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
 
         String userInput = String.join("\n",
                 "2", // Login
@@ -71,7 +87,7 @@ public class MainMenuApplicationTest {
         scanner = createScannerWithInput(userInput);
 
 
-        MainMenuApplication app = new MainMenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner, dao);
         app.start();
 
         assertEquals("Logged in account should match the credentials used",
@@ -86,13 +102,13 @@ public class MainMenuApplicationTest {
     @Test
     public void testInvalidLogin() {
         Account account = new Account();
-        AccountStore.addAccount(account);
+        this.dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
 
         String userInput = String.join("\n",
                 "2", "wrongCard", "wrongPin", "0") + "\n";
         scanner = createScannerWithInput(userInput);
 
-        MainMenuApplication app = new MainMenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner, dao);
         app.start();
 
         assertNull("No account should be logged in with invalid credentials", app.getLoggedInAccount());
@@ -100,15 +116,16 @@ public class MainMenuApplicationTest {
 
     @Test
     public void testShowLoggedInMenu() {
+        PrintStream originalOut = System.out;
         // Create account to know credentials
         Account account = new Account();
-        AccountStore.addAccount(account);
+        this.dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
 
         String userInput = String.join("\n",
                 "2", // Login
                 account.getCardNumber(),
                 account.getPin(),
-                "1", // Banalce
+                "1", // Balance
                 "2", // Log-out
                 "0", // Exit Logged in menu
                 "0" // Exit main menu
@@ -119,7 +136,7 @@ public class MainMenuApplicationTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
 
-        MainMenuApplication app = new MainMenuApplication(scanner);
+        MainMenuApplication app = new MainMenuApplication(scanner, dao);
         app.start();
 
         String output = out.toString();
@@ -132,6 +149,7 @@ public class MainMenuApplicationTest {
 
         assertTrue("Expected logout message 'You have successfully logged out!' was not found in output:\n" + output,
                 output.contains("You have successfully logged out!"));
+        System.setOut(originalOut);
     }
 
     /**

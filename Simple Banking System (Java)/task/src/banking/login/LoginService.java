@@ -1,5 +1,7 @@
 package banking.login;
 
+import banking.database.CardDAO;
+
 public class LoginService {
 
     /**
@@ -9,7 +11,7 @@ public class LoginService {
      * @param pin The PIN as a String
      * @return True if the login is successful; false otherwise
      */
-    public static boolean handleLoginOption(String cardNumber, String pin) {
-        return LoginManager.isValidLogin(cardNumber, pin);
+    public static boolean handleLoginOption(String cardNumber, String pin, CardDAO dao) {
+        return LoginManager.isValidLogin(cardNumber, pin, dao);
     }
 }

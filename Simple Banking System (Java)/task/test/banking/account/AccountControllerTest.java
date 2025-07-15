@@ -1,21 +1,56 @@
 package banking.account;
 
+import banking.database.CardDAO;
+import banking.utility.database.DatabaseTestUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 public class AccountControllerTest {
     private Account testAccount;
+    private CardDAO dao;
+    private String databaseName;
+    private Connection conn;
 
     /**
-     * Clears the AccountStore of any accounts before each test
+     * Prepares a fresh test database before each test run.
+     * Ensures the table exists and is emptied, then adds one test account.
      */
     @Before
     public void setUp() {
-        AccountStore.clearAccounts();
+        this.databaseName = "testAccountController.s3db";
+        try {
+            this.conn = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to the database", e);
+        }
+        this.dao = new CardDAO(conn);
+        dao.ensureCardTableExists();
+        dao.clearAllCards();
+
         testAccount = new Account();
-        AccountStore.addAccount(testAccount);
+        dao.addCard(testAccount.getCardNumber(), testAccount.getPin(), testAccount.getBalance());
+    }
+
+    /**
+     * Removes the database used for testing
+     */
+    @After
+    public void tearDown() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error closing connection: " + e.getMessage());
+        }
+        DatabaseTestUtils.deleteDatabaseFile(databaseName);
     }
 
     /**
@@ -23,9 +58,9 @@ public class AccountControllerTest {
      */
     @Test
     public void testCreateAccountOption() {
-        assertEquals("AccountStore should contain exactly 1 account after setup",
+        assertEquals("Database should contain exactly 1 account after setup",
                 1,
-                AccountStore.getAccounts().size());
+                dao.countAllCards());
     }
 
 }

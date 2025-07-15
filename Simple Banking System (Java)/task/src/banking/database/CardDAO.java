@@ -5,15 +5,11 @@ import banking.account.Account;
 import java.sql.*;
 
 public class CardDAO {
-    private final String url;
+    private final Connection conn;
 
-    /**
-     * Constructs a CardDAO with a JDBC URL pointing to the specified SQLite database.
-     *
-     * @param databaseName the name of the database file as a String
-     */
-    public CardDAO(String databaseName) {
-        this.url = "jdbc:sqlite:" + databaseName;
+
+    public CardDAO(Connection conn) {
+        this.conn = conn;
     }
 
     /**
@@ -30,8 +26,7 @@ public class CardDAO {
             );
             """;
 
-        try (Connection conn = DriverManager.getConnection(url);
-             Statement stmt = conn.createStatement()) {
+        try (Statement stmt = conn.createStatement()) {
             stmt.execute(createTable);
         } catch (SQLException e) {
             System.err.println("Failed to create table: " + e.getMessage());
@@ -50,8 +45,7 @@ public class CardDAO {
         String sql = """
                 INSERT INTO card (number, pin, balance)
                 VALUES (?,?,?)""";
-        try (Connection conn = DriverManager.getConnection(url);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cardNumber);
             stmt.setString(2, pin);
@@ -65,6 +59,27 @@ public class CardDAO {
     }
 
     /**
+     * Counts all card entries in the database.
+     *
+     * @return Total cards as an int
+     */
+    public int countAllCards() {
+        String sql = "SELECT COUNT(*) FROM card";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error counting all card in the database: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    /**
      * Searches the database by card and PIN and returns an account.
      *
      * @param cardNumber card number as a String
@@ -73,25 +88,24 @@ public class CardDAO {
      */
     public Account findByCardAndPin(String cardNumber, String pin) {
         String sql = """
-                SELECT number, pin, balance 
+                SELECT number, pin, balance
                 FROM card
                 WHERE number = ? AND
                 pin = ?""";
-        try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, cardNumber);
             stmt.setString(2, pin);
 
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return new Account(
-                        rs.getString("number"),
-                        rs.getString("pin"),
-                        rs.getInt("balance")
-                );
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Account(
+                            rs.getString("number"),
+                            rs.getString("pin"),
+                            rs.getInt("balance")
+                    );
+                }
             }
+
 
         } catch (SQLException e) {
             System.err.println("Something went wrong finding the card by card number and pin in " +
@@ -99,5 +113,22 @@ public class CardDAO {
 
         }
         return null;
+    }
+
+
+    /**
+     * Clears all entries in the card database.
+     */
+    public void clearAllCards() {
+        String sql = """
+                DELETE FROM card
+                """;
+
+        try (Statement stmt = conn.createStatement()){
+
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.err.println("Something went wrong clearing all cards from the database: " + e.getMessage());
+        }
     }
 }

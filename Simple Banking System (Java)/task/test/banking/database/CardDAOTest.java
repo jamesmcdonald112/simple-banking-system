@@ -65,7 +65,6 @@ public class CardDAOTest {
         dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
 
         Account retrievedAccount = dao.findByCardAndPin(account.getCardNumber(), account.getPin());
-        System.out.println("retrievedAccount: " + retrievedAccount);
         assertNotNull("Card should be found in the database", retrievedAccount);
 
         assertEquals("Card numbers from account and retrieved account should match",
@@ -73,6 +72,21 @@ public class CardDAOTest {
 
         assertEquals("Pins from account and retrieved account should match",
                 account.getPin(), retrievedAccount.getPin());
+    }
+
+    /**
+     * Ensures that the balance in the database is correctly returned
+     */
+    @Test
+    public void testGetBalanceByCardNumber() {
+        Account account = new Account();
+        int testBalance = 1234;
+        dao.addCard(account.getCardNumber(), account.getPin(), testBalance);
+
+        int retrievedBalance = dao.getBalanceByCardNumber(account.getCardNumber());
+        assertEquals("Retrieved balance should match the inserted balance ",
+                testBalance,
+                retrievedBalance);
     }
 
 

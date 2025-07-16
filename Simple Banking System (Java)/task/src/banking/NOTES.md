@@ -134,3 +134,12 @@ You can now write integration-style tests here or just use manual console testin
   convert it to an int for this to work. This will allow e to multiply by two and to add 
   together. At the end, i can convert it back to a string
 
+
+  
+-
+
+1. Balance from database 
+Test:
+- Add an account to the database with a known balance
+- Simulate the user logging in and selecting balance
+- Assert that the correct balance is shown in the console output.

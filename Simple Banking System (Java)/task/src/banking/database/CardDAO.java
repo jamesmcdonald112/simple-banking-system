@@ -115,6 +115,32 @@ public class CardDAO {
         return null;
     }
 
+    /**
+     * Retrieves the balance for the given card number from the database.
+     *
+     * @param cardNumber the card number to search for
+     * @return the account balance if found; -1 if not found or an error occurs
+     */
+    public int getBalanceByCardNumber(String cardNumber) {
+        String balanceQuery = """
+                SELECT balance 
+                FROM card
+                WHERE number = ?;
+                """;
+        try(PreparedStatement stmt = conn.prepareStatement(balanceQuery)) {
+            stmt.setString(1, cardNumber);
+
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("balance");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Something went wrong fetching the balance from the database: " + e.getMessage());
+        }
+        return -1;
+    }
+
 
     /**
      * Clears all entries in the card database.

@@ -1,6 +1,9 @@
 package banking.menu.login;
 
 import banking.account.Account;
+import banking.database.CardDAO;
+import banking.database.DatabaseConfig;
+import banking.utility.database.DatabaseTestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +11,9 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
@@ -16,13 +22,27 @@ public class LoginMenuApplicationTest {
     private Scanner scanner;
     private Account loggedInAccount;
     private boolean LoggedOut = false;
+    private String databaseName;
+    private Connection conn;
+    private CardDAO cardDAO;
 
     /**
      * Creates a new account to test login
      */
     @Before
     public void setup() {
+        this.databaseName = "testLoginMenuApplicationTest";
+        try {
+            this.conn = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+            this.cardDAO = new CardDAO(conn);
+        } catch (SQLException e) {
+            System.err.println("DB connection error: " + e.getMessage());
+        }
+        cardDAO.ensureCardTableExists();
+        cardDAO.clearAllCards();
+
         loggedInAccount = new Account();
+        cardDAO.addCard(loggedInAccount.getCardNumber(), loggedInAccount.getPin(), loggedInAccount.getBalance());
     }
 
     /**
@@ -30,6 +50,13 @@ public class LoginMenuApplicationTest {
      */
     @After
     public void teardown() {
+        try {
+            if (conn != null && !conn.isClosed()) conn.close();
+        } catch (SQLException e) {
+            System.err.println("DB closing error: " + e.getMessage());
+        }
+
+        DatabaseTestUtils.deleteDatabaseFile(databaseName);
         if (scanner != null) scanner.close();
         System.setOut(System.out);
     }
@@ -49,7 +76,7 @@ public class LoginMenuApplicationTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
 
-        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount);
+        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount, cardDAO);
         loginApp.start();
 
         String output = out.toString();
@@ -74,7 +101,7 @@ public class LoginMenuApplicationTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
 
-        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount);
+        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount, cardDAO);
         loginApp.start();
 
         String output = out.toString();

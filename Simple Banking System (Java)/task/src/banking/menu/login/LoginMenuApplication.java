@@ -1,12 +1,16 @@
 package banking.menu.login;
 
 import banking.account.Account;
+import banking.database.CardDAO;
+
 import java.util.Scanner;
 
 public class LoginMenuApplication {
     private final Scanner scanner;
     private final Account loggedInAccount;
+    private final CardDAO cardDAO;
     private boolean loggedIn;
+
 
 
     /**
@@ -15,10 +19,11 @@ public class LoginMenuApplication {
      * @param scanner The scanner to the set
      * @param loggedInAccount The logged in account to be set
      */
-    public LoginMenuApplication(Scanner scanner, Account loggedInAccount) {
+    public LoginMenuApplication(Scanner scanner, Account loggedInAccount, CardDAO cardDAO) {
         this.scanner = scanner;
         this.loggedInAccount = loggedInAccount;
         this.loggedIn = true;
+        this.cardDAO = cardDAO;
     }
 
     /**
@@ -69,7 +74,8 @@ public class LoginMenuApplication {
      * Prints the logged in account balance to the screen
      */
     private void handleShowBalance() {
-        System.out.println("Balance: " + loggedInAccount.getBalance());
+        int retrievedBalance = cardDAO.getBalanceByCardNumber(loggedInAccount.getCardNumber());
+        System.out.println("Balance: " + retrievedBalance);
     }
 
     /**

@@ -55,6 +55,9 @@ public class LoginMenuApplication {
 
             switch (choice) {
                 case BALANCE -> handleShowBalance();
+                case ADD_INCOME -> handleAddIncome();
+                case DO_TRANSFER -> handleDoTransfer();
+                case CLOSE_ACCOUNT -> handleCloseAccount();
                 case LOG_OUT -> handleLogOut();
                 case EXIT -> running = false;
                 default -> System.out.println("Invalid option. Try Again.");
@@ -64,10 +67,11 @@ public class LoginMenuApplication {
 
     /** Prints the main menu options to the console. */
     private void printMenuOptions() {
-        System.out.println("""
-                1. Balance
-                2. Log out
-                0. Exit""");
+        for (LoginMenuResult option : LoginMenuResult.values()) {
+            if (option != LoginMenuResult.INVALID) {
+                System.out.printf("%d. %s%n", option.getValue(), option.getLabel());
+            }
+        }
     }
 
     /**
@@ -76,6 +80,18 @@ public class LoginMenuApplication {
     private void handleShowBalance() {
         int retrievedBalance = cardDAO.getBalanceByCardNumber(loggedInAccount.getCardNumber());
         System.out.println("Balance: " + retrievedBalance);
+    }
+
+    private void handleAddIncome() {
+
+    }
+
+    private void handleDoTransfer() {
+
+    }
+
+    private void handleCloseAccount() {
+
     }
 
     /**

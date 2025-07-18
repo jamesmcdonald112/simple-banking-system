@@ -141,6 +141,28 @@ public class CardDAO {
         return -1;
     }
 
+    /**
+     * Adds income to the balance of the card in the database.
+     *
+     * @param cardNumber the card number to search for
+     * @param income the amount to add
+     */
+    public void addIncome(String cardNumber, int income) {
+        String incomeUpdate = """
+                UPDATE card
+                SET balance = balance + ?
+                WHERE number = ?
+        """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(incomeUpdate)) {
+            stmt.setInt(1, income);
+            stmt.setString(2, cardNumber);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Something went wrong updating the balance from the database: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Clears all entries in the card database.

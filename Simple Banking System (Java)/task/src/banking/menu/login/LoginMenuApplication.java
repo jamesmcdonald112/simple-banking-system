@@ -50,6 +50,7 @@ public class LoginMenuApplication {
 
         while (running && loggedIn) {
             printMenuOptions();
+            if (!scanner.hasNextLine()) break;
             String input = scanner.nextLine();
             LoginMenuResult choice = LoginMenuService.handleMenuInput(input);
 
@@ -82,8 +83,14 @@ public class LoginMenuApplication {
         System.out.println("Balance: " + retrievedBalance);
     }
 
+    /**
+     * Prompts the user to enter an income amount and adds it to their account balance.
+     */
     private void handleAddIncome() {
-
+        System.out.println("Enter income:");
+        int income = scanner.nextInt();
+        scanner.nextLine();
+        cardDAO.addIncome(loggedInAccount.getCardNumber(), income);
     }
 
     private void handleDoTransfer() {

@@ -87,15 +87,42 @@ public class LoginMenuApplicationTest {
     }
 
     /**
-     * Simulates user selecting "2" (Log out) followed by "0" (exit),
-     * and verifies that logged in is set to false and a log-out message is printed to the screen.
+     * Simulates user selecting "2" (Add income) followed by the amount "10000",
+     * and verifies that the correct balance is printed to the screen.
      */
     @Test
-    public void testLogOutThenExit() {
+    public void testHandleAddIncome() {
         String input = String.join("\n",
-                "2", // Log out
-                "0" // Exit
+                "2", // Add income
+                "10000", // income to add
+                "1" // Balance
         ) + "\n";
+        scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount, cardDAO);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertTrue("Expected balance output to contain 'Balance: 10000",
+                output.contains("Balance: 10000"));
+
+        assertEquals("Expected balance in the card account is expected to be 10000",
+                10000,
+                cardDAO.getBalanceByCardNumber(loggedInAccount.getCardNumber()));
+    }
+
+    /**
+     * Simulates user selecting Log out and verifies that logged in is set to false and a log-out
+     * message is printed to the screen.
+     */
+    @Test
+    public void testLogOut() {
+        String input = String.valueOf(LoginMenuResult.LOG_OUT.getValue());
+
         scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();

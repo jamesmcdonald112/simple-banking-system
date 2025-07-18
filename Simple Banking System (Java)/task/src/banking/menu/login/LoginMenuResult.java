@@ -2,13 +2,13 @@ package banking.menu.login;
 
 
 public enum LoginMenuResult {
-    EXIT(0, "Exit"),
     BALANCE(1, "Balance"),
     ADD_INCOME(2, "Add income"),
     DO_TRANSFER(3, "Do transfer"),
     CLOSE_ACCOUNT(4, "Close account"),
     LOG_OUT(5, "Log out"),
-    INVALID(-1, "Invalid");
+    INVALID(-1, "Invalid"),
+    EXIT(0, "Exit"),;
 
     private final int value;
     private final String label;

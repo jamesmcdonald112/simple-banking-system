@@ -6,7 +6,7 @@ public enum LoginMenuResult {
     BALANCE(1, "Balance"),
     ADD_INCOME(2, "Add income"),
     DO_TRANSFER(3, "Do transfer"),
-    CLOSE_ACCOUNT(3, "Close account"),
+    CLOSE_ACCOUNT(4, "Close account"),
     LOG_OUT(5, "Log out"),
     INVALID(-1, "Invalid");
 

@@ -6,22 +6,19 @@ import static org.junit.Assert.*;
 
 public class LoginMenuResultTest {
 
+
     /**
      * Verifies that each input corresponds to the correct ENUM
      */
     @Test
     public void testFromValueReturnsCorrectEnum() {
-        assertEquals("Input of 0 should return EXIT",
-                LoginMenuResult.EXIT,
-                LoginMenuResult.fromValue(0));
-
-        assertEquals("Input of 1 should return BALANCE",
-                LoginMenuResult.BALANCE,
-                LoginMenuResult.fromValue(1));
-
-        assertEquals("Input of 2 should return LOG_OUT",
-                LoginMenuResult.LOG_OUT,
-                LoginMenuResult.fromValue(2));
+        for (LoginMenuResult result : LoginMenuResult.values()) {
+            if (result != LoginMenuResult.INVALID) {
+                assertEquals("Input of " + result.getValue() + " should return " + result,
+                        result,
+                        LoginMenuResult.fromValue(result.getValue()));
+            }
+        }
     }
 
     /**

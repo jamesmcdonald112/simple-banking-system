@@ -141,6 +141,24 @@ public class CardDAOTest {
                 this.dao.getBalanceByCardNumber(creditAccount.getCardNumber()));
     }
 
+    /**
+     * Ensures that cards are successfully deleted from the database.
+     */
+    @Test
+    public void testDeleteCard_successfulDelete_cardIsNull() {
+        Account accountToDelete = new Account();
+        this.dao.addCard(accountToDelete.getCardNumber(), accountToDelete.getPin(),
+                accountToDelete.getBalance());
+
+        assertNotNull("The card is in the database",
+                this.dao.findByCard(accountToDelete.getCardNumber()));
+
+        this.dao.closeAccount(accountToDelete.getCardNumber());
+
+        assertNull("Searching for the deleted card should return null",
+                this.dao.findByCard(accountToDelete.getCardNumber()));
+    }
+
 
     /**
      * Checks whether a given table exists in the specified SQLite database

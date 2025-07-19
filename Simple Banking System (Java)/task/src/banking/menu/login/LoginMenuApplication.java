@@ -159,8 +159,11 @@ public class LoginMenuApplication {
         }
     }
 
+    /**
+     * Deletes the card from the database.
+     */
     private void handleCloseAccount() {
-
+        this.cardDAO.closeAccount(this.loggedInAccount.getCardNumber());
     }
 
     /**

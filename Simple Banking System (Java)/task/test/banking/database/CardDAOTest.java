@@ -75,6 +75,23 @@ public class CardDAOTest {
     }
 
     /**
+     * Ensures that card details in the database are retrieved correctly.
+     */
+    @Test
+    public void testFindByCard_validCard_returnsAccount() {
+        Account account = new Account();
+        dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
+
+        Account retrievedAccount = dao.findByCard(account.getCardNumber());
+        assertNotNull("Card should be found in the database",
+                retrievedAccount);
+
+        assertEquals("Card numbers from account and retrieved account should match",
+                account.getCardNumber(),
+                retrievedAccount.getCardNumber());
+    }
+
+    /**
      * Ensures that the balance in the database is correctly returned
      */
     @Test
@@ -108,6 +125,7 @@ public class CardDAOTest {
             return false;
         }
     }
+
 
 
 

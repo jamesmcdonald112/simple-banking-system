@@ -80,6 +80,37 @@ public class CardDAO {
     }
 
     /**
+     * Searches the database by card number and returns an account.
+     *
+     * @param cardNumber card number as a String
+     * @return The Account as an Account if found; null otherwise.
+     */
+    public Account findByCard(String cardNumber) {
+        String sql = """
+                SELECT number, pin, balance
+                FROM card
+                WHERE number = ?
+                """;
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, cardNumber);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Account(
+                            rs.getString("number"),
+                            rs.getString("pin"),
+                            rs.getInt("balance")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Something went wrong finding the card by card number in the " +
+                    "database: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
      * Searches the database by card and PIN and returns an account.
      *
      * @param cardNumber card number as a String

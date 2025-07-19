@@ -114,18 +114,18 @@ public class LoginMenuApplication {
         System.out.println("Enter card number:");
         if (!this.scanner.hasNextLine()) return;
 
-        String cardNumber = scanner.nextLine().trim();
+        String cardNumberToTransfer = scanner.nextLine().trim();
 
-        if (cardNumber.equals(loggedInAccount.getCardNumber())) {
+        if (cardNumberToTransfer.equals(loggedInAccount.getCardNumber())) {
                 System.out.println("You can't transfer money to the same account!");
                 return;
             }
 
-        if (!LuhnUtils.isValid(cardNumber)) {
+        if (!LuhnUtils.isValid(cardNumberToTransfer)) {
             System.out.println("Probably you made a mistake in the card number. Please try again!");
             return;
         }
-        if (this.cardDAO.findByCard(cardNumber) == null) {
+        if (this.cardDAO.findByCard(cardNumberToTransfer) == null) {
             System.out.println("Such a card does not exist.");
             return;
         }
@@ -144,6 +144,15 @@ public class LoginMenuApplication {
             if (amount > currentBalance) {
                 System.out.println("Not enough money!");
                 return;
+            }
+
+            boolean isSuccessfulTransfer =
+                    this.cardDAO.transferFunds(this.loggedInAccount.getCardNumber(),
+                    cardNumberToTransfer
+                    , amount);
+
+            if (isSuccessfulTransfer) {
+                System.out.println("Success!");
             }
         } catch (NumberFormatException e) {
             System.out.println("Error parsing number from transfer amount: " + e.getMessage());

@@ -234,6 +234,39 @@ public class LoginMenuApplicationTest {
      */
     @Test
     public void testTransfer_insufficientFunds_printErrorMessage() {
+        this.cardDAO.addIncome(this.loggedInAccount.getCardNumber(), 10000); // Increase balance
+
+        Account newAccount = new Account();
+        this.cardDAO.addCard(newAccount.getCardNumber(), newAccount.getPin(), newAccount.getBalance());
+
+        String input = String.join("\n",
+                String.valueOf(LoginMenuResult.DO_TRANSFER.getValue()), // Do Transfer
+                newAccount.getCardNumber(), // Enter the newly added card to the db
+                "1000" // the amount to transfer
+        );
+
+        this.scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(this.scanner,
+                this.loggedInAccount, this.cardDAO);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertTrue("Transferring funds less than the balance from the logged in account should " +
+                        "print a success message: 'Success!'",
+                output.contains("Success!"));
+
+    }
+
+    /**
+     * Ensures that a successful transfer prints a success message to the console.
+     */
+    @Test
+    public void testTransfer_sufficientFunds_printSuccessMessage() {
         Account newAccount = new Account();
         this.cardDAO.addCard(newAccount.getCardNumber(), newAccount.getPin(), newAccount.getBalance());
 

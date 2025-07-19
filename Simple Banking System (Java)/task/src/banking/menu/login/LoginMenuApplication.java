@@ -2,6 +2,8 @@ package banking.menu.login;
 
 import banking.account.Account;
 import banking.database.CardDAO;
+import banking.database.DatabaseManager;
+import banking.utility.LuhnUtils;
 
 import java.util.Scanner;
 
@@ -104,8 +106,57 @@ public class LoginMenuApplication {
 
     }
 
+    /**
+     * Prompts the user to enter the card number they wish to transfer to.
+     */
     private void handleDoTransfer() {
+        System.out.println("Transfer");
+        System.out.println("Enter card number:");
+        if (!this.scanner.hasNextLine()) return;
 
+        String cardNumberToTransfer = scanner.nextLine().trim();
+
+        if (cardNumberToTransfer.equals(loggedInAccount.getCardNumber())) {
+                System.out.println("You can't transfer money to the same account!");
+                return;
+            }
+
+        if (!LuhnUtils.isValid(cardNumberToTransfer)) {
+            System.out.println("Probably you made a mistake in the card number. Please try again!");
+            return;
+        }
+        if (this.cardDAO.findByCard(cardNumberToTransfer) == null) {
+            System.out.println("Such a card does not exist.");
+            return;
+        }
+
+        System.out.println("Enter how much money you want to transfer:");
+        if (!this.scanner.hasNextLine()) return;
+
+        try {
+            int amount = Integer.parseInt(scanner.nextLine().trim());
+            if (amount <= 0) {
+                System.out.println("Amount must be greater than 0");
+                return;
+            }
+            int currentBalance =
+                    this.cardDAO.getBalanceByCardNumber(this.loggedInAccount.getCardNumber());
+            if (amount > currentBalance) {
+                System.out.println("Not enough money!");
+                return;
+            }
+
+            boolean isSuccessfulTransfer =
+                    this.cardDAO.transferFunds(this.loggedInAccount.getCardNumber(),
+                    cardNumberToTransfer
+                    , amount);
+
+            if (isSuccessfulTransfer) {
+                System.out.println("Success!");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing number from transfer amount: " + e.getMessage());
+        }
     }
 
     private void handleCloseAccount() {

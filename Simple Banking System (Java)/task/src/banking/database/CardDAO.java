@@ -80,6 +80,37 @@ public class CardDAO {
     }
 
     /**
+     * Searches the database by card number and returns an account.
+     *
+     * @param cardNumber card number as a String
+     * @return The Account as an Account if found; null otherwise.
+     */
+    public Account findByCard(String cardNumber) {
+        String sql = """
+                SELECT number, pin, balance
+                FROM card
+                WHERE number = ?
+                """;
+        try(PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, cardNumber);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Account(
+                            rs.getString("number"),
+                            rs.getString("pin"),
+                            rs.getInt("balance")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Something went wrong finding the card by card number in the " +
+                    "database: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
      * Searches the database by card and PIN and returns an account.
      *
      * @param cardNumber card number as a String
@@ -123,7 +154,7 @@ public class CardDAO {
      */
     public int getBalanceByCardNumber(String cardNumber) {
         String balanceQuery = """
-                SELECT balance 
+                SELECT balance
                 FROM card
                 WHERE number = ?;
                 """;
@@ -163,6 +194,54 @@ public class CardDAO {
         }
     }
 
+    /**
+     * Transfers funds from one account to another and rolls back if it fails.
+     *
+     * @param fromCard The card depositing the money
+     * @param toCard The card receiving the money
+     * @param amount The amount to be transferred
+     * @return True if successfully transferred; false otherwise.
+     */
+    public boolean transferFunds(String fromCard, String toCard, int amount) {
+        String withdrawSQL = """
+                UPDATE card
+                SET balance = balance - ?
+                WHERE number = ? AND
+                balance >= ?""";
+        String depositSql = """
+                UPDATE card
+                SET balance = balance + ?
+                WHERE number = ?""";
+
+        try (PreparedStatement withdrawStmt = this.conn.prepareStatement(withdrawSQL);
+            PreparedStatement depositStmt = this.conn.prepareStatement(depositSql)) {
+
+            this.conn.setAutoCommit(false);
+
+            withdrawStmt.setInt(1, amount);
+            withdrawStmt.setString(2, fromCard);
+            withdrawStmt.setInt(3, amount);
+
+            int withdrawn = withdrawStmt.executeUpdate();
+            if (withdrawn == 0) {
+                this.conn.rollback();
+                return false;
+            }
+
+            depositStmt.setInt(1, amount);
+            depositStmt.setString(2, toCard);
+            depositStmt.executeUpdate();
+
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            rollBackQuietly();
+            System.out.println("Failed to transfer funds: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     /**
      * Clears all entries in the card database.
@@ -177,6 +256,15 @@ public class CardDAO {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             System.err.println("Something went wrong clearing all cards from the database: " + e.getMessage());
+        }
+    }
+
+
+    private void rollBackQuietly() {
+        try {
+            this.conn.rollback();
+        } catch (SQLException e) {
+            System.out.println("Rollback failed: " + e.getMessage());
         }
     }
 }

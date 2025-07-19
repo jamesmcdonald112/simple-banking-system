@@ -6,6 +6,8 @@ import banking.database.CardDAO;
 import banking.database.DatabaseConfig;
 import banking.utility.LuhnUtils;
 import banking.utility.database.DatabaseTestUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 
 import java.io.ByteArrayInputStream;
@@ -20,6 +22,7 @@ import java.util.Scanner;
 import static org.junit.Assert.*;
 
 public class LoginMenuApplicationTest {
+    private static final Log log = LogFactory.getLog(LoginMenuApplicationTest.class);
     private Scanner scanner;
     private Account loggedInAccount;
     private boolean LoggedOut = false;
@@ -226,6 +229,36 @@ public class LoginMenuApplicationTest {
     }
 
 
+    /**
+     * Ensures that accounts cannot send more money than they have in their account
+     */
+    @Test
+    public void testTransfer_insufficientFunds_printErrorMessage() {
+        Account newAccount = new Account();
+        this.cardDAO.addCard(newAccount.getCardNumber(), newAccount.getPin(), newAccount.getBalance());
+
+        String input = String.join("\n",
+                String.valueOf(LoginMenuResult.DO_TRANSFER.getValue()), // Do Transfer
+                newAccount.getCardNumber(), // Enter the newly added card to the db
+                "100000" // the amount to transfer
+        );
+
+        this.scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(this.scanner,
+                this.loggedInAccount, this.cardDAO);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertTrue("Transferring more money than you have in your account should print an error " +
+                        "message 'Not enough money!'",
+                output.contains("Not enough money!"));
+
+    }
 
     /**
      * Simulates user selecting Do Transfer followed by the amount greater than is in their account,

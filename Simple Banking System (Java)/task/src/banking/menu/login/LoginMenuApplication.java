@@ -129,6 +129,25 @@ public class LoginMenuApplication {
             System.out.println("Such a card does not exist.");
             return;
         }
+
+        System.out.println("Enter how much money you want to transfer:");
+        if (!this.scanner.hasNextLine()) return;
+
+        try {
+            int amount = Integer.parseInt(scanner.nextLine().trim());
+            if (amount <= 0) {
+                System.out.println("Amount must be greater than 0");
+                return;
+            }
+            int currentBalance =
+                    this.cardDAO.getBalanceByCardNumber(this.loggedInAccount.getCardNumber());
+            if (amount > currentBalance) {
+                System.out.println("Not enough money!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing number from transfer amount: " + e.getMessage());
+        }
     }
 
     private void handleCloseAccount() {

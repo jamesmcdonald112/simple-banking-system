@@ -175,6 +175,36 @@ public class LoginMenuApplicationTest {
     }
 
     /**
+     * Simulates user selecting Do Transfer followed by the incorrect card number,
+     * and verifies that the error message is printed to the screen.
+     */
+    @Test
+    public void testDoTransfer_nonExistentCard_shouldPrintErrorMessage() {
+        Account account = new Account(); // not added to the database
+
+        String input = String.join("\n",
+                String.valueOf(LoginMenuResult.DO_TRANSFER.getValue()), // Do transfer
+                account.getCardNumber() // this card in not in the database
+        );
+
+        this.scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(this.scanner,
+                this.loggedInAccount, this.cardDAO);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertTrue("Uses a card number that doesn't exist in the database should print an error " +
+                "message: 'Such a card does not exist.'",
+                output.contains("Such a card does not exist."));
+    }
+
+
+    /**
      * Simulates user selecting Do Transfer followed by the amount greater than is in their account,
      * and verifies that the error message is printed to the screen.
      */
@@ -200,6 +230,8 @@ public class LoginMenuApplicationTest {
         assertTrue("Expected output to contain: 'Not enough money!'",
                 output.contains("Not enough money!"));
     }
+
+
 
     /**
      * Simulates user selecting Log out and verifies that logged in is set to false and a log-out

@@ -2,6 +2,7 @@ package banking.menu.login;
 
 import banking.account.Account;
 import banking.database.CardDAO;
+import banking.database.DatabaseManager;
 import banking.utility.LuhnUtils;
 
 import java.util.Scanner;
@@ -115,6 +116,8 @@ public class LoginMenuApplication {
             String cardNumber = scanner.nextLine().trim();
             if (!LuhnUtils.isValid(cardNumber)) {
                 System.out.println("Probably you made a mistake in the card number. Please try again!\n");
+            } else if (this.cardDAO.findByCard(cardNumber) == null) {
+                System.out.println("Such a card does not exist.");
             }
         }
     }

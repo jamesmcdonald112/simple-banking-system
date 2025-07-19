@@ -6,6 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -106,6 +108,39 @@ public class CardDAOTest {
                 retrievedBalance);
     }
 
+    /**
+     * Ensures that the transfer from one account to another is successful
+     */
+    @Test
+    public void testTransferFunds_successfulTransfer_returnsTrue() {
+        Account debitAccount = new Account();
+        Account creditAccount = new Account();
+
+        int debitAccountInitialBalance = 10000;
+        int transferBalance = 1000;
+
+        this.dao.addCard(debitAccount.getCardNumber(), debitAccount.getPin(), debitAccountInitialBalance);
+        this.dao.addCard(creditAccount.getCardNumber(), creditAccount.getPin(), creditAccount.getBalance());
+
+        String debitCardNumber = debitAccount.getCardNumber();
+
+        boolean isSuccessfulTransfer = this.dao.transferFunds(debitCardNumber,
+                creditAccount.getCardNumber(), transferBalance);
+
+        assertTrue("Transfer should be successful and return true",
+                isSuccessfulTransfer);
+
+        assertEquals("Debit account should be equal to the initial balance less the transfered " +
+                "balance.",
+                debitAccountInitialBalance - transferBalance,
+                this.dao.getBalanceByCardNumber(debitCardNumber));
+
+        assertEquals("Credit account should be equal to the transfer balance plus the initial " +
+                        "balance.",
+                creditAccount.getBalance() + transferBalance,
+                this.dao.getBalanceByCardNumber(creditAccount.getCardNumber()));
+    }
+
 
     /**
      * Checks whether a given table exists in the specified SQLite database
@@ -125,6 +160,7 @@ public class CardDAOTest {
             return false;
         }
     }
+
 
 
 

@@ -88,9 +88,20 @@ public class LoginMenuApplication {
      */
     private void handleAddIncome() {
         System.out.println("Enter income:");
-        int income = scanner.nextInt();
-        scanner.nextLine();
-        cardDAO.addIncome(loggedInAccount.getCardNumber(), income);
+        if (scanner.hasNextLine()) {
+            String line = scanner.nextLine().trim();
+            try {
+                int income = Integer.parseInt(line);
+                if (income < 0) {
+                    System.out.println("Cannot add negative number");
+                } else {
+                    cardDAO.addIncome(loggedInAccount.getCardNumber(), income);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number");
+            }
+        }
+
     }
 
     private void handleDoTransfer() {

@@ -116,6 +116,32 @@ public class LoginMenuApplicationTest {
     }
 
     /**
+     * Simulates user selecting Add income followed by the negative amount,
+     * and verifies that the error message is printed to the screen.
+     */
+    @Test
+    public void testAddIncome_negativeAmount_shouldNotUpdateBalance() {
+        String input = String.join("\n",
+                String.valueOf(LoginMenuResult.ADD_INCOME.getValue()), // Add income
+                "-10000"
+        );
+
+        this.scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(scanner, loggedInAccount, cardDAO);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertTrue("Expected output contain error: 'Cannot add negative number'. Actual: " +
+                output,
+                output.contains("Cannot add negative number"));
+    }
+
+    /**
      * Simulates user selecting Log out and verifies that logged in is set to false and a log-out
      * message is printed to the screen.
      */

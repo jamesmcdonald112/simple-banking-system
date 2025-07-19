@@ -114,7 +114,10 @@ public class LoginMenuApplication {
         System.out.println("Enter card number:");
         if (this.scanner.hasNextLine()) {
             String cardNumber = scanner.nextLine().trim();
-            if (!LuhnUtils.isValid(cardNumber)) {
+            if (cardNumber.equals(loggedInAccount.getCardNumber())) {
+                System.out.println("You can't transfer money to the same account!");
+            }
+            else if (!LuhnUtils.isValid(cardNumber)) {
                 System.out.println("Probably you made a mistake in the card number. Please try again!\n");
             } else if (this.cardDAO.findByCard(cardNumber) == null) {
                 System.out.println("Such a card does not exist.");

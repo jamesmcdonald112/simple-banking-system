@@ -203,6 +203,29 @@ public class LoginMenuApplicationTest {
                 output.contains("Such a card does not exist."));
     }
 
+    @Test
+    public void testDoTransfer_sameAccount_printErrorMessage() {
+        String input = String.join("\n",
+                String.valueOf(LoginMenuResult.DO_TRANSFER.getValue()), // Do Transfer
+                loggedInAccount.getCardNumber() // Enter the same card number as logged-in account
+        );
+
+        this.scanner = new Scanner(new ByteArrayInputStream(input.getBytes()));
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+
+        LoginMenuApplication loginApp = new LoginMenuApplication(this.scanner,
+                this.loggedInAccount, this.cardDAO);
+        loginApp.start();
+
+        String output = out.toString();
+
+        assertTrue("Error message is printed when trying to transfer to the same account",
+                output.contains("You can't transfer money to the same account!"));
+    }
+
+
 
     /**
      * Simulates user selecting Do Transfer followed by the amount greater than is in their account,

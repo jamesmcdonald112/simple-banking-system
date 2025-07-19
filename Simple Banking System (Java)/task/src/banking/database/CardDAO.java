@@ -259,7 +259,38 @@ public class CardDAO {
         }
     }
 
+    /**
+     * Deletes the card from the database.
+     *
+     * @param cardNumber The card to be deleted.
+     */
+    public void closeAccount(String cardNumber) {
+        String deleteStatement = """
+                DELETE FROM card
+                WHERE number = ?""";
 
+        try(PreparedStatement deleteStmt = conn.prepareStatement(deleteStatement)) {
+            deleteStmt.setString(1, cardNumber);
+            int rowsDeleted = deleteStmt.executeUpdate();
+
+            if (!conn.getAutoCommit()) {
+                conn.commit();
+            }
+
+            if (rowsDeleted == 0) {
+                System.out.println("No cards found to delete for number: " + cardNumber);
+            }
+
+        } catch (SQLException e) {
+            rollBackQuietly();
+            System.out.println("Failed to delete card from the database: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Rolls back the commit or prints an error message if fails.
+     */
     private void rollBackQuietly() {
         try {
             this.conn.rollback();

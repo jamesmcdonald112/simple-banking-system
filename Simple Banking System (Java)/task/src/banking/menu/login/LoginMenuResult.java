@@ -2,20 +2,26 @@ package banking.menu.login;
 
 
 public enum LoginMenuResult {
-    EXIT(0),
-    BALANCE(1),
-    LOG_OUT(2),
-    INVALID(-1);
+    BALANCE(1, "Balance"),
+    ADD_INCOME(2, "Add income"),
+    DO_TRANSFER(3, "Do transfer"),
+    CLOSE_ACCOUNT(4, "Close account"),
+    LOG_OUT(5, "Log out"),
+    INVALID(-1, "Invalid"),
+    EXIT(0, "Exit"),;
 
     private final int value;
+    private final String label;
 
     /**
-     * Constructs a LoginMenuResult with a corresponding integer value.
+     * Constructs a LoginMenuResult with a corresponding integer value and String label.
      *
      * @param value The numeric representation of the menu option.
+     * @param label The string  representation of the menu option.
      */
-    LoginMenuResult(int value) {
+    LoginMenuResult(int value, String label) {
         this.value = value;
+        this.label = label;
     }
 
     /**
@@ -25,6 +31,15 @@ public enum LoginMenuResult {
      */
     public int getValue() {
         return value;
+    }
+
+    /**
+     * Returns the String value associated with this menu option.
+     *
+     * @return String value of menu option.
+     */
+    public String getLabel() {
+        return label;
     }
 
     /**

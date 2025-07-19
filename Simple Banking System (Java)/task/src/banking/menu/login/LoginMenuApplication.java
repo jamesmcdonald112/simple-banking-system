@@ -50,11 +50,15 @@ public class LoginMenuApplication {
 
         while (running && loggedIn) {
             printMenuOptions();
+            if (!scanner.hasNextLine()) break;
             String input = scanner.nextLine();
             LoginMenuResult choice = LoginMenuService.handleMenuInput(input);
 
             switch (choice) {
                 case BALANCE -> handleShowBalance();
+                case ADD_INCOME -> handleAddIncome();
+                case DO_TRANSFER -> handleDoTransfer();
+                case CLOSE_ACCOUNT -> handleCloseAccount();
                 case LOG_OUT -> handleLogOut();
                 case EXIT -> running = false;
                 default -> System.out.println("Invalid option. Try Again.");
@@ -64,10 +68,11 @@ public class LoginMenuApplication {
 
     /** Prints the main menu options to the console. */
     private void printMenuOptions() {
-        System.out.println("""
-                1. Balance
-                2. Log out
-                0. Exit""");
+        for (LoginMenuResult option : LoginMenuResult.values()) {
+            if (option != LoginMenuResult.INVALID) {
+                System.out.printf("%d. %s%n", option.getValue(), option.getLabel());
+            }
+        }
     }
 
     /**
@@ -76,6 +81,35 @@ public class LoginMenuApplication {
     private void handleShowBalance() {
         int retrievedBalance = cardDAO.getBalanceByCardNumber(loggedInAccount.getCardNumber());
         System.out.println("Balance: " + retrievedBalance);
+    }
+
+    /**
+     * Prompts the user to enter an income amount and adds it to their account balance.
+     */
+    private void handleAddIncome() {
+        System.out.println("Enter income:");
+        if (scanner.hasNextLine()) {
+            String line = scanner.nextLine().trim();
+            try {
+                int income = Integer.parseInt(line);
+                if (income < 0) {
+                    System.out.println("Cannot add negative number");
+                } else {
+                    cardDAO.addIncome(loggedInAccount.getCardNumber(), income);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number");
+            }
+        }
+
+    }
+
+    private void handleDoTransfer() {
+
+    }
+
+    private void handleCloseAccount() {
+
     }
 
     /**

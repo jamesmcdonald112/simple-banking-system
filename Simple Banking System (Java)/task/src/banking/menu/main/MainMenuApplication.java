@@ -26,15 +26,12 @@ public class MainMenuApplication {
         while (running) {
             printMenuOptions();
             String input = scanner.nextLine();
-            System.err.println("DEBUG: Read input -> " + input);
             MainMenuResult choice = MainMenuService.handleMenuInput(input);
 
             switch (choice) {
                 case CREATE_ACCOUNT -> handleCreateAccount();
                 case LOGIN -> handleLogin();
-                case EXIT -> {
-                    running = false;
-                }
+                case EXIT -> running = false;
                 default -> System.out.println("Invalid option. Try Again.");
             }
         }
@@ -98,7 +95,7 @@ public class MainMenuApplication {
         if (LoginManager.isValidLogin(cardNumber, pin, cardDAO)) {
             System.out.println("You have successfully logged in!");
             setLoggedInAccount(cardDAO.findByCardAndPin(cardNumber, pin));
-            LoginMenuApplication loginMenu = new LoginMenuApplication(scanner, loggedInAccount);
+            LoginMenuApplication loginMenu = new LoginMenuApplication(scanner, loggedInAccount, cardDAO);
             loginMenu.start();
         } else {
             System.out.println("Wrong card number or PIN!");

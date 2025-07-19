@@ -25,6 +25,7 @@ public class MainMenuApplication {
 
         while (running) {
             printMenuOptions();
+            if (!scanner.hasNextLine()) return;
             String input = scanner.nextLine();
             MainMenuResult choice = MainMenuService.handleMenuInput(input);
 

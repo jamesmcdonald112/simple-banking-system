@@ -2,6 +2,7 @@ package banking.menu.main;
 
 import banking.account.Account;
 import banking.database.CardDAO;
+import banking.menu.login.LoginMenuResult;
 import banking.utility.database.DatabaseTestUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -122,14 +123,13 @@ public class MainMenuApplicationTest {
         this.dao.addCard(account.getCardNumber(), account.getPin(), account.getBalance());
 
         String userInput = String.join("\n",
-                "2", // Login
+                String.valueOf(MainMenuResult.LOGIN.getValue()), // Login
                 account.getCardNumber(),
                 account.getPin(),
-                "1", // Balance
-                "2", // Log-out
-                "0", // Exit Logged in menu
-                "0" // Exit main menu
-        ) + "\n";
+                String.valueOf(LoginMenuResult.BALANCE.getValue()), // Balance
+                String.valueOf(LoginMenuResult.LOG_OUT.getValue()) // Log-out
+
+        );
 
         scanner = new Scanner(new ByteArrayInputStream(userInput.getBytes()));
 

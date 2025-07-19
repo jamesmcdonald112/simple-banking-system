@@ -2,6 +2,7 @@ package banking.menu.login;
 
 import banking.account.Account;
 import banking.database.CardDAO;
+import banking.utility.LuhnUtils;
 
 import java.util.Scanner;
 
@@ -104,8 +105,18 @@ public class LoginMenuApplication {
 
     }
 
+    /**
+     * Prompts the user to enter the card number they wish to transfer to.
+     */
     private void handleDoTransfer() {
-
+        System.out.println("Transfer");
+        System.out.println("Enter card number:");
+        if (this.scanner.hasNextLine()) {
+            String cardNumber = scanner.nextLine().trim();
+            if (!LuhnUtils.isValid(cardNumber)) {
+                System.out.println("Probably you made a mistake in the card number. Please try again!\n");
+            }
+        }
     }
 
     private void handleCloseAccount() {
